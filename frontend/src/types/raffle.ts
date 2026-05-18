@@ -1,45 +1,52 @@
-export enum RaffleStatus {
-  Open = 0,
-  Closed = 1,
-  Drawing = 2,
-  Drawn = 3,
-}
+export type RaffleStatus = "open" | "closed" | "drawn";
 
 export const RAFFLE_STATUS_LABEL: Record<RaffleStatus, string> = {
-  [RaffleStatus.Open]: "Open",
-  [RaffleStatus.Closed]: "Closed",
-  [RaffleStatus.Drawing]: "Drawing…",
-  [RaffleStatus.Drawn]: "Drawn",
+  open: "Open",
+  closed: "Closed",
+  drawn: "Drawn",
 };
 
 export const RAFFLE_STATUS_COLOR: Record<RaffleStatus, string> = {
-  [RaffleStatus.Open]: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30",
-  [RaffleStatus.Closed]: "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
-  [RaffleStatus.Drawing]: "text-purple-400 bg-purple-400/10 border-purple-400/30",
-  [RaffleStatus.Drawn]: "text-sky-400 bg-sky-400/10 border-sky-400/30",
+  open: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30",
+  closed: "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
+  drawn: "text-sky-400 bg-sky-400/10 border-sky-400/30",
 };
 
 export interface Raffle {
-  id: bigint;
+  id: number;
   prizeDescription: string;
-  ticketPrice: bigint;
-  maxEntries: bigint;
+  ticketPrice: number; // cents; 0 = free
+  maxEntries: number;
   status: RaffleStatus;
-  drawTime: bigint;
-  ticketCount: bigint;
-  prizePool: bigint;
-  creator: `0x${string}`;
+  drawTime: string | null;
+  ticketCount: number;
+  prizePool: number; // cents
+  creatorName: string;
+  createdAt: string;
 }
 
 export interface Ticket {
-  id: bigint;
-  owner: `0x${string}`;
-  timestamp: bigint;
+  id: number;
+  raffleId: number;
+  ticketNumber: number;
+  ownerName: string;
+  ownerEmail: string;
+  stripeSessionId: string | null;
+  createdAt: string;
 }
 
 export interface DrawResult {
-  winnerTicketId: bigint;
-  winnerAddress: `0x${string}`;
-  vrfRequestId: bigint;
+  raffleId: number;
+  winnerTicketNumber: number;
+  winnerName: string;
+  winnerEmail: string;
+  randomSeed: string;
   prizeClaimed: boolean;
+  drawnAt: string;
+}
+
+export interface RaffleDetail {
+  raffle: Raffle;
+  drawResult: DrawResult | null;
+  tickets: Ticket[];
 }

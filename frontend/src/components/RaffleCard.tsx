@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Ticket, Trophy, Clock, ArrowRight } from "lucide-react";
-import { Raffle, RAFFLE_STATUS_LABEL, RAFFLE_STATUS_COLOR, RaffleStatus } from "@/types/raffle";
-import { formatEth, formatDrawTime } from "@/lib/utils";
+import { Raffle, RAFFLE_STATUS_LABEL, RAFFLE_STATUS_COLOR } from "@/types/raffle";
+import { formatCents, formatDrawTime } from "@/lib/utils";
 import { TicketProgress } from "./TicketProgress";
 
 interface RaffleCardProps {
@@ -13,8 +13,6 @@ interface RaffleCardProps {
 }
 
 export function RaffleCard({ raffle, index = 0 }: RaffleCardProps) {
-  const isPulsing = raffle.status === RaffleStatus.Drawing;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,12 +20,10 @@ export function RaffleCard({ raffle, index = 0 }: RaffleCardProps) {
       transition={{ delay: index * 0.05 }}
     >
       <Link href={`/raffle/${raffle.id}`}>
-        <div
-          className={`group relative rounded-2xl border bg-brand-card p-5 transition-all duration-300
-            hover:border-brand-purple/60 hover:shadow-lg hover:shadow-brand-purple/10
-            ${isPulsing ? "border-purple-500/50 animate-pulse-glow" : "border-brand-border"}`}
-        >
-          {/* Status badge */}
+        <div className="group relative rounded-2xl border border-brand-border bg-brand-card p-5
+          transition-all duration-300 hover:border-brand-purple/60 hover:shadow-lg
+          hover:shadow-brand-purple/10">
+          {/* Status + title */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <h3 className="text-white font-semibold text-base leading-snug line-clamp-2 flex-1">
               {raffle.prizeDescription || "Untitled Raffle"}
@@ -41,17 +37,17 @@ export function RaffleCard({ raffle, index = 0 }: RaffleCardProps) {
             </span>
           </div>
 
-          {/* Stats row */}
+          {/* Stats */}
           <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
             <div className="flex items-center gap-2 text-gray-400">
               <Ticket className="w-4 h-4 text-brand-purple shrink-0" />
-              <span>{formatEth(raffle.ticketPrice)} / ticket</span>
+              <span>{formatCents(raffle.ticketPrice)} / ticket</span>
             </div>
             <div className="flex items-center gap-2 text-gray-400">
               <Trophy className="w-4 h-4 text-brand-pink shrink-0" />
-              <span>Pool: {formatEth(raffle.prizePool)}</span>
+              <span>Pool: {formatCents(raffle.prizePool)}</span>
             </div>
-            {raffle.drawTime > 0n && (
+            {raffle.drawTime && (
               <div className="flex items-center gap-2 text-gray-400 col-span-2">
                 <Clock className="w-4 h-4 text-yellow-400 shrink-0" />
                 <span>Draw: {formatDrawTime(raffle.drawTime)}</span>
@@ -67,8 +63,9 @@ export function RaffleCard({ raffle, index = 0 }: RaffleCardProps) {
             <ArrowRight className="w-4 h-4 text-brand-purple" />
           </div>
 
-          {/* Raffle ID */}
-          <div className="mt-3 text-xs text-gray-600">Raffle #{raffle.id.toString()}</div>
+          <div className="mt-3 text-xs text-gray-600">
+            #{raffle.id} · by {raffle.creatorName}
+          </div>
         </div>
       </Link>
     </motion.div>

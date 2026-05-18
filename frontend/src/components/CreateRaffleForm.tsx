@@ -2,73 +2,50 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt, useChainId } from "wagmi";
-import { parseEther } from "viem";
 import { motion } from "framer-motion";
 import { Plus, Loader2 } from "lucide-react";
-import { RAFFLE_ABI, getContractAddress } from "@/lib/contracts";
+import { useCreateRaffle } from "@/hooks/useRaffle";
+import { useAdmin } from "@/hooks/useAdmin";
 
 export function CreateRaffleForm() {
   const router = useRouter();
-  const { address } = useAccount();
-  const chainId = useChainId();
-  const contractAddress = getContractAddress(chainId);
+  const { isAdmin } = useAdmin();
+  const { mutateAsync, isPending } = useCreateRaffle();
 
   const [prizeDescription, setPrizeDescription] = useState("");
-  const [ticketPrice, setTicketPrice] = useState("0.01");
+  const [ticketPrice, setTicketPrice] = useState("0");
   const [maxEntries, setMaxEntries] = useState("100");
   const [drawTime, setDrawTime] = useState("");
+  const [creatorName, setCreatorName] = useState("");
   const [error, setError] = useState("");
 
-  const { writeContract, data: txHash, isPending } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
-    hash: txHash,
-  });
-
-  if (isSuccess) {
-    router.push("/");
-    router.refresh();
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
-    if (!address) return setError("Connect your wallet first.");
-    if (!contractAddress) return setError("Contract not deployed on this network yet.");
+    if (!isAdmin) return setError("You must be logged in as admin to create a raffle.");
     if (!prizeDescription.trim()) return setError("Prize description is required.");
-
-    let priceBigInt: bigint;
-    let maxEntriesBigInt: bigint;
-    let drawTimeBigInt: bigint;
-
-    try {
-      priceBigInt = parseEther(ticketPrice);
-    } catch {
-      return setError("Invalid ticket price.");
-    }
 
     const maxEntriesNum = parseInt(maxEntries, 10);
     if (isNaN(maxEntriesNum) || maxEntriesNum < 1) return setError("Max entries must be at least 1.");
-    maxEntriesBigInt = BigInt(maxEntriesNum);
 
-    if (drawTime) {
-      const ts = Math.floor(new Date(drawTime).getTime() / 1000);
-      if (isNaN(ts)) return setError("Invalid draw time.");
-      drawTimeBigInt = BigInt(ts);
-    } else {
-      drawTimeBigInt = 0n;
+    const ticketPriceNum = parseFloat(ticketPrice);
+    if (isNaN(ticketPriceNum) || ticketPriceNum < 0) return setError("Ticket price cannot be negative.");
+
+    try {
+      await mutateAsync({
+        prizeDescription: prizeDescription.trim(),
+        ticketPrice: ticketPriceNum,
+        maxEntries: maxEntriesNum,
+        drawTime: drawTime || undefined,
+        creatorName: creatorName.trim() || "Organiser",
+      });
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setError((err as Error).message || "Failed to create raffle.");
     }
-
-    writeContract({
-      address: contractAddress,
-      abi: RAFFLE_ABI,
-      functionName: "createRaffle",
-      args: [priceBigInt, maxEntriesBigInt, prizeDescription.trim(), drawTimeBigInt],
-    });
   }
-
-  const busy = isPending || isConfirming;
 
   return (
     <motion.form
@@ -92,21 +69,38 @@ export function CreateRaffleForm() {
         />
       </div>
 
-      {/* Ticket price */}
+      {/* Creator name */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Ticket price (ETH) *</label>
+        <label className="block text-sm font-medium text-gray-300">Your name (organiser)</label>
         <input
-          type="number"
-          value={ticketPrice}
-          onChange={(e) => setTicketPrice(e.target.value)}
-          min="0"
-          step="0.001"
-          placeholder="0.01"
+          type="text"
+          value={creatorName}
+          onChange={(e) => setCreatorName(e.target.value)}
+          placeholder="e.g. Chris"
           className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
             placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
             focus:ring-brand-purple transition"
         />
-        <p className="text-xs text-gray-500">Set to 0 for a free raffle</p>
+      </div>
+
+      {/* Ticket price */}
+      <div className="space-y-1.5">
+        <label className="block text-sm font-medium text-gray-300">Ticket price (USD) *</label>
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+          <input
+            type="number"
+            value={ticketPrice}
+            onChange={(e) => setTicketPrice(e.target.value)}
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            className="w-full rounded-xl border border-brand-border bg-brand-card pl-8 pr-4 py-3 text-white
+              placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
+              focus:ring-brand-purple transition"
+          />
+        </div>
+        <p className="text-xs text-gray-500">Set to 0 for a free raffle; paid raffles use Stripe Checkout</p>
       </div>
 
       {/* Max entries */}
@@ -145,23 +139,23 @@ export function CreateRaffleForm() {
         </p>
       )}
 
-      {!address && (
+      {!isAdmin && (
         <p className="text-sm text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 rounded-xl px-4 py-3">
-          Connect your wallet to create a raffle.
+          Log in as admin (top-right) to create a raffle.
         </p>
       )}
 
       <button
         type="submit"
-        disabled={busy || !address || !contractAddress}
+        disabled={isPending || !isAdmin}
         className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold
           bg-brand-gradient text-white transition disabled:opacity-50 disabled:cursor-not-allowed
           active:scale-95 hover:opacity-90"
       >
-        {busy ? (
+        {isPending ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            {isConfirming ? "Confirming…" : "Signing…"}
+            Creating…
           </>
         ) : (
           <>

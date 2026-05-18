@@ -5,13 +5,13 @@ import { WalletButton } from "@/components/WalletButton";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "OnChain Raffle",
-  description: "Provably fair raffles powered by Chainlink VRF — fully on-chain.",
+  title: "Raffle",
+  description: "Simple, fair raffles — entries tracked online, draw powered by server-side crypto.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "OnChain Raffle",
+    title: "Raffle",
   },
   icons: {
     icon: "/icon-192.png",
@@ -31,7 +31,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-brand-dark">
         <Providers>
-          {/* Header */}
           <header className="sticky top-0 z-50 border-b border-brand-border/60 bg-brand-dark/80 backdrop-blur-md">
             <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2">
@@ -42,7 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </header>
 
-          {/* Main content */}
           <main className="mx-auto max-w-lg px-4 py-6 pb-24">{children}</main>
         </Providers>
       </body>

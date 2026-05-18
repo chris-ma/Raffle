@@ -1,13 +1,2 @@
-"use client";
-
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-
-export function WalletButton() {
-  return (
-    <ConnectButton
-      chainStatus="icon"
-      accountStatus={{ smallScreen: "avatar", largeScreen: "full" }}
-      showBalance={{ smallScreen: false, largeScreen: true }}
-    />
-  );
-}
+// Re-exports AdminLogin under the old name so layout.tsx doesn't need to change
+export { AdminLogin as WalletButton } from "./AdminLogin";

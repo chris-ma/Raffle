@@ -3,8 +3,8 @@
 import { progressPercent } from "@/lib/utils";
 
 interface TicketProgressProps {
-  sold: bigint;
-  max: bigint;
+  sold: number;
+  max: number;
   showLabel?: boolean;
 }
 
@@ -17,7 +17,7 @@ export function TicketProgress({ sold, max, showLabel = true }: TicketProgressPr
       {showLabel && (
         <div className="flex justify-between text-xs text-gray-400">
           <span>
-            {sold.toString()} / {max.toString()} tickets
+            {sold} / {max} tickets
           </span>
           <span className={full ? "text-emerald-400 font-semibold" : "text-gray-400"}>
             {full ? "SOLD OUT" : `${pct}%`}
