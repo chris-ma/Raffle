@@ -18,3 +18,7 @@ drizzle/
 .DS_Store
 *.pem
 npm-debug.log*
+tsconfig.tsbuildinfo
+
+# leftover build dir
+frontend/
