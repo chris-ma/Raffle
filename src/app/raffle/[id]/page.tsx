@@ -22,9 +22,13 @@ const STATUS_STEPS = [
 
 export default function RafflePage({ params }: { params: { id: string } }) {
   const { id } = params;
+  console.log("[RafflePage] render — id:", id, "params type:", typeof params);
+
   const { isAdmin } = useAdmin();
-  const { data, isLoading, refetch } = useRaffleDetail(id);
+  const { data, isLoading, error: queryError, refetch } = useRaffleDetail(id);
   const [myEmail, setMyEmail] = useState("");
+
+  console.log("[RafflePage] data:", data, "isLoading:", isLoading, "queryError:", queryError);
 
   const raffle = data?.raffle;
   const drawResult = data?.drawResult ?? null;
@@ -46,6 +50,15 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       <div className="flex items-center justify-center gap-2 text-brand-muted py-16 px-4">
         <RefreshCw className="w-4 h-4 animate-spin" />
         Loading raffle…
+      </div>
+    );
+  }
+
+  if (queryError) {
+    return (
+      <div className="text-center py-16 space-y-3 px-4">
+        <p className="text-red-500 font-mono text-sm">API error: {(queryError as Error).message}</p>
+        <Link href="/" className="text-brand-coral text-sm">Back to home</Link>
       </div>
     );
   }
