@@ -15,11 +15,9 @@ export function TicketProgress({ sold, max, showLabel = true }: TicketProgressPr
   return (
     <div className="w-full space-y-1">
       {showLabel && (
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>
-            {sold} / {max} tickets
-          </span>
-          <span className={full ? "text-emerald-400 font-semibold" : "text-gray-400"}>
+        <div className="flex justify-between text-xs text-brand-muted">
+          <span>{sold} / {max} tickets</span>
+          <span className={full ? "text-brand-green font-semibold" : ""}>
             {full ? "SOLD OUT" : `${pct}%`}
           </span>
         </div>
@@ -29,9 +27,7 @@ export function TicketProgress({ sold, max, showLabel = true }: TicketProgressPr
           className="h-full rounded-full transition-all duration-700"
           style={{
             width: `${pct}%`,
-            background: full
-              ? "linear-gradient(90deg, #10b981, #34d399)"
-              : "linear-gradient(90deg, #7C3AED, #EC4899)",
+            background: full ? "#00B894" : "#E8635A",
           }}
         />
       </div>

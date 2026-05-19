@@ -56,15 +56,13 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
   const mutError = freeMutation.error || stripeMutation.error;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Price info */}
-      <div className="flex items-center justify-between rounded-xl border border-brand-border bg-brand-card px-4 py-3">
-        <span className="text-gray-400 text-sm">Entry price</span>
-        <span className={`font-semibold ${isFree ? "text-emerald-400" : "text-white"}`}>
+      <div className="flex items-center justify-between rounded-2xl border border-brand-border bg-brand-surface px-4 py-3">
+        <span className="text-brand-muted text-sm">Entry price</span>
+        <span className={`font-semibold ${isFree ? "text-brand-green" : "text-brand-coral"}`}>
           {formatCents(raffle.ticketPrice)}
-          {isFree && (
-            <span className="ml-1.5 text-xs text-emerald-500 font-normal">(Free!)</span>
-          )}
+          {isFree && <span className="ml-1 text-xs font-normal text-brand-green">(Free!)</span>}
         </span>
       </div>
 
@@ -76,24 +74,22 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
             value={ownerName}
             onChange={(e) => setOwnerName(e.target.value)}
             placeholder="Your name"
-            className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-              placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-              focus:ring-brand-purple transition text-sm"
+            className="w-full rounded-2xl border border-brand-border bg-brand-surface px-4 py-3
+              text-brand-text placeholder-brand-muted focus:border-brand-coral focus:outline-none transition text-sm"
           />
           <input
             type="email"
             value={ownerEmail}
             onChange={(e) => setOwnerEmail(e.target.value)}
             placeholder="Your email"
-            className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-              placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-              focus:ring-brand-purple transition text-sm"
+            className="w-full rounded-2xl border border-brand-border bg-brand-surface px-4 py-3
+              text-brand-text placeholder-brand-muted focus:border-brand-coral focus:outline-none transition text-sm"
           />
         </div>
       )}
 
       {fieldError && (
-        <p className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
+        <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
           {fieldError}
         </p>
       )}
@@ -103,9 +99,9 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
         <button
           onClick={isFree ? handleFree : handlePaid}
           disabled={busy || soldOut}
-          className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold
-            bg-brand-gradient text-white transition disabled:opacity-50 disabled:cursor-not-allowed
-            active:scale-95 hover:opacity-90"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold
+            bg-brand-yellow text-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed
+            active:scale-[0.98] hover:brightness-105"
         >
           {busy ? (
             <>
@@ -124,9 +120,9 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
       )}
 
       {!isFree && raffle.status === "open" && (
-        <p className="text-xs text-gray-500 text-center">
-          You&apos;ll be redirected to Stripe. Use test card{" "}
-          <span className="font-mono text-gray-400">4242 4242 4242 4242</span> in test mode.
+        <p className="text-xs text-brand-muted text-center">
+          You&apos;ll be redirected to Stripe. Test card:{" "}
+          <span className="font-mono">4242 4242 4242 4242</span>
         </p>
       )}
 
@@ -135,18 +131,18 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-4 space-y-1"
+          className="rounded-2xl bg-green-50 border border-green-200 p-4 space-y-1"
         >
-          <div className="flex items-center gap-2 text-emerald-400 font-semibold">
+          <div className="flex items-center gap-2 text-brand-green font-semibold">
             <CheckCircle className="w-4 h-4" />
             Ticket #{successTicket} registered!
           </div>
-          <p className="text-xs text-gray-400">Check your email for confirmation.</p>
+          <p className="text-xs text-brand-muted">Check your email for confirmation.</p>
         </motion.div>
       )}
 
       {mutError && (
-        <p className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
+        <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
           {(mutError as Error).message}
         </p>
       )}
@@ -154,13 +150,13 @@ export function BuyTicketSection({ raffle, userTickets, onSuccess }: BuyTicketSe
       {/* User's existing tickets */}
       {userTickets.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-400">Your tickets in this raffle</h4>
+          <h4 className="text-sm font-medium text-brand-muted">Your tickets</h4>
           <div className="flex flex-wrap gap-2">
             {userTickets.map((t) => (
               <span
                 key={t.id}
-                className="inline-flex items-center gap-1 rounded-lg border border-brand-purple/40
-                  bg-brand-purple/10 px-3 py-1.5 text-sm text-brand-purple font-mono"
+                className="inline-flex items-center gap-1 rounded-xl border border-brand-coral/30
+                  bg-brand-coral/10 px-3 py-1.5 text-sm text-brand-coral font-mono"
               >
                 <Ticket className="w-3 h-3" />#{t.ticketNumber}
               </span>

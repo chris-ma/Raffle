@@ -9,23 +9,26 @@ export const metadata: Metadata = {
 
 export default function CreatePage() {
   return (
-    <div className="space-y-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </Link>
-
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-white">Create Raffle</h1>
-        <p className="text-gray-400 text-sm">
-          Free raffles are instant. Paid raffles use Stripe Checkout — use test mode for demos.
+    <div>
+      {/* Dark header band */}
+      <div className="bg-brand-dark px-4 pt-6 pb-12">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition mb-4"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Link>
+        <h1 className="text-2xl font-black text-white">Create Raffle</h1>
+        <p className="text-gray-400 text-sm mt-1">
+          Free raffles are instant. Paid raffles use Stripe Checkout.
         </p>
       </div>
 
-      <CreateRaffleForm />
+      {/* Slide-up form card */}
+      <div className="-mt-6 rounded-t-3xl bg-brand-surface relative z-10">
+        <CreateRaffleForm />
+      </div>
     </div>
   );
 }

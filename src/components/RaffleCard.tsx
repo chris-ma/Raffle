@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Ticket, Trophy, Clock, ArrowRight } from "lucide-react";
-import { Raffle, RAFFLE_STATUS_LABEL, RAFFLE_STATUS_COLOR } from "@/types/raffle";
+import { Clock } from "lucide-react";
+import { Raffle, RAFFLE_STATUS_LABEL } from "@/types/raffle";
 import { formatCents, formatDrawTime } from "@/lib/utils";
-import { TicketProgress } from "./TicketProgress";
+
+const TICKET_COLORS = ["#E8635A", "#5B8DEF", "#6C5CE7", "#00B894", "#F39C12"];
 
 interface RaffleCardProps {
   raffle: Raffle;
@@ -13,58 +14,79 @@ interface RaffleCardProps {
 }
 
 export function RaffleCard({ raffle, index = 0 }: RaffleCardProps) {
+  const color = TICKET_COLORS[raffle.id % TICKET_COLORS.length];
+  const ticketCode = `R-${String(raffle.id).padStart(4, "0")}`;
+  const pct = raffle.maxEntries > 0 ? Math.round((raffle.ticketCount / raffle.maxEntries) * 100) : 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      transition={{ delay: index * 0.06 }}
     >
       <Link href={`/raffle/${raffle.id}`}>
-        <div className="group relative rounded-2xl border border-brand-border bg-brand-card p-5
-          transition-all duration-300 hover:border-brand-purple/60 hover:shadow-lg
-          hover:shadow-brand-purple/10">
-          {/* Status + title */}
-          <div className="flex items-start justify-between gap-3 mb-4">
-            <h3 className="text-white font-semibold text-base leading-snug line-clamp-2 flex-1">
-              {raffle.prizeDescription || "Untitled Raffle"}
-            </h3>
-            <span
-              className={`shrink-0 text-xs font-medium px-2 py-1 rounded-full border ${
-                RAFFLE_STATUS_COLOR[raffle.status]
-              }`}
-            >
-              {RAFFLE_STATUS_LABEL[raffle.status]}
-            </span>
-          </div>
+        {/* Outer wrapper keeps notch circles visible outside the rounded card */}
+        <div className="relative py-2">
+          {/* Notch cutouts at stub separator */}
+          <div
+            className="absolute z-10 w-5 h-5 rounded-full bg-brand-surface"
+            style={{ left: 47, top: "50%", transform: "translateY(-50%) translateY(-14px)" }}
+          />
+          <div
+            className="absolute z-10 w-5 h-5 rounded-full bg-brand-surface"
+            style={{ left: 47, top: "50%", transform: "translateY(-50%) translateY(14px)" }}
+          />
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Ticket className="w-4 h-4 text-brand-purple shrink-0" />
-              <span>{formatCents(raffle.ticketPrice)} / ticket</span>
+          <div
+            className="flex rounded-3xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform duration-150"
+            style={{ backgroundColor: color }}
+          >
+            {/* Left stub */}
+            <div className="w-14 flex items-center justify-center relative shrink-0 py-5">
+              <span
+                className="text-white/50 text-[10px] font-bold tracking-widest select-none"
+                style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+              >
+                {ticketCode}
+              </span>
+              <div className="absolute right-0 top-4 bottom-4 border-r-2 border-dashed border-white/25" />
             </div>
-            <div className="flex items-center gap-2 text-gray-400">
-              <Trophy className="w-4 h-4 text-brand-pink shrink-0" />
-              <span>Pool: {formatCents(raffle.prizePool)}</span>
-            </div>
-            {raffle.drawTime && (
-              <div className="flex items-center gap-2 text-gray-400 col-span-2">
-                <Clock className="w-4 h-4 text-yellow-400 shrink-0" />
-                <span>Draw: {formatDrawTime(raffle.drawTime)}</span>
+
+            {/* Main content */}
+            <div className="flex-1 p-4 text-white">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="font-bold text-base leading-snug line-clamp-2 flex-1">
+                  {raffle.prizeDescription || "Untitled Raffle"}
+                </h3>
+                <span className="shrink-0 text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                  {RAFFLE_STATUS_LABEL[raffle.status]}
+                </span>
               </div>
-            )}
-          </div>
 
-          {/* Progress */}
-          <TicketProgress sold={raffle.ticketCount} max={raffle.maxEntries} />
+              <div className="flex items-center gap-3 text-sm text-white/75 mb-2">
+                <span className="font-semibold">{formatCents(raffle.ticketPrice)}/ticket</span>
+                <span className="text-white/40">·</span>
+                <span>{raffle.ticketCount}/{raffle.maxEntries} sold</span>
+              </div>
 
-          {/* Arrow */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <ArrowRight className="w-4 h-4 text-brand-purple" />
-          </div>
+              {raffle.drawTime && (
+                <div className="flex items-center gap-1 text-xs text-white/50 mb-3">
+                  <Clock className="w-3 h-3" />
+                  {formatDrawTime(raffle.drawTime)}
+                </div>
+              )}
 
-          <div className="mt-3 text-xs text-gray-600">
-            #{raffle.id} · by {raffle.creatorName}
+              {/* Progress bar */}
+              <div className="h-1 rounded-full bg-white/20">
+                <div
+                  className="h-1 rounded-full bg-white/70 transition-all duration-500"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Right accent strip */}
+            <div className="w-2 shrink-0" style={{ backgroundColor: "rgba(0,0,0,0.18)" }} />
           </div>
         </div>
       </Link>

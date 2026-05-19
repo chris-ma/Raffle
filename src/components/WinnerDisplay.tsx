@@ -62,42 +62,38 @@ export function WinnerDisplay({ raffle, result, viewerEmail }: WinnerDisplayProp
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", bounce: 0.3 }}
-      className="space-y-4"
+      className="space-y-3"
     >
       {/* Winner card */}
       <div
         ref={cardRef}
-        className="relative rounded-2xl border border-yellow-400/40
-          bg-gradient-to-br from-[#1a1a35] to-brand-card p-6 text-center overflow-hidden"
+        className="rounded-3xl overflow-hidden shadow-md"
+        style={{ background: "linear-gradient(135deg, #E8635A 0%, #F39C12 100%)" }}
       >
-        <div className="absolute inset-0 bg-brand-gradient opacity-5 rounded-2xl" />
-        <div className="relative space-y-3">
+        <div className="p-6 text-center text-white space-y-3">
           <div className="text-4xl">🏆</div>
-          <h2 className="text-xl font-bold text-white">We have a winner!</h2>
-          <p className="text-gray-400 text-sm">{raffle.prizeDescription}</p>
+          <h2 className="text-xl font-black">We have a winner!</h2>
+          <p className="text-white/70 text-sm">{raffle.prizeDescription}</p>
 
-          <div className="mt-4 space-y-2">
-            <div className="flex items-center justify-center gap-2 text-yellow-400 font-semibold text-lg">
+          <div className="bg-white/15 rounded-2xl p-4 space-y-1 mt-2">
+            <div className="flex items-center justify-center gap-2 font-bold text-lg">
               <Ticket className="w-5 h-5" />
               Ticket #{result.winnerTicketNumber}
             </div>
-            <p className="text-white text-lg font-bold">{result.winnerName}</p>
-            <p className="text-gray-500 text-sm font-mono">{shortenEmail(result.winnerEmail)}</p>
+            <p className="text-xl font-black">{result.winnerName}</p>
+            <p className="text-white/60 text-sm font-mono">{shortenEmail(result.winnerEmail)}</p>
           </div>
 
           {raffle.prizePool > 0 && (
-            <div className="mt-2 text-emerald-400 font-semibold">
-              Prize pool: {formatCents(raffle.prizePool)}
-            </div>
+            <p className="font-semibold">Prize pool: {formatCents(raffle.prizePool)}</p>
           )}
 
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30
-            bg-emerald-400/10 px-3 py-1 text-xs text-emerald-400">
+          <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1 text-xs">
             <CheckCircle className="w-3 h-3" />
-            Fair draw · server-side crypto.randomInt
+            Fair draw · crypto.randomInt
           </div>
 
-          <p className="text-xs text-gray-600 mt-1 font-mono">Seed: {result.randomSeed}</p>
+          <p className="text-white/40 text-xs font-mono">seed: {result.randomSeed}</p>
         </div>
       </div>
 
@@ -106,10 +102,10 @@ export function WinnerDisplay({ raffle, result, viewerEmail }: WinnerDisplayProp
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border border-yellow-400/40 bg-yellow-400/10 p-4 text-center"
+          className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-center"
         >
-          <p className="text-yellow-400 font-bold text-lg">🎉 That&apos;s you!</p>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-amber-700 font-bold text-lg">🎉 That&apos;s you!</p>
+          <p className="text-brand-muted text-sm mt-1">
             The organiser will be in touch at {result.winnerEmail}.
           </p>
         </motion.div>
@@ -119,18 +115,16 @@ export function WinnerDisplay({ raffle, result, viewerEmail }: WinnerDisplayProp
       <div className="flex gap-3">
         <button
           onClick={handleShare}
-          className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium
-            border border-brand-border bg-brand-card text-gray-300 hover:text-white
-            hover:border-brand-purple/50 transition"
+          className="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm
+            font-semibold bg-brand-card text-brand-text shadow-sm hover:shadow-md transition"
         >
           <Share2 className="w-4 h-4" />
           Share
         </button>
         <button
           onClick={handleDownload}
-          className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium
-            border border-brand-border bg-brand-card text-gray-300 hover:text-white
-            hover:border-brand-purple/50 transition"
+          className="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm
+            font-semibold bg-brand-card text-brand-text shadow-sm hover:shadow-md transition"
         >
           <Download className="w-4 h-4" />
           Save card

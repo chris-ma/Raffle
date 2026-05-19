@@ -3,14 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    color-scheme: dark;
-  }
-
   html,
   body {
-    background-color: #0D0D1A;
-    color: #ffffff;
+    background-color: #F2F2F7;
+    color: #1A1A2E;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -19,7 +15,6 @@
     box-sizing: border-box;
   }
 
-  /* Hide number input arrows */
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;

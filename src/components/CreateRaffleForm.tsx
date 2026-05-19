@@ -47,47 +47,44 @@ export function CreateRaffleForm() {
     }
   }
 
+  const inputCls =
+    "w-full rounded-2xl border border-brand-border bg-brand-surface px-4 py-3 text-brand-text " +
+    "placeholder-brand-muted focus:border-brand-coral focus:outline-none transition text-sm";
+
   return (
     <motion.form
       onSubmit={handleSubmit}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-5"
+      className="space-y-4 px-4 pt-2 pb-6"
     >
-      {/* Prize */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Prize description *</label>
+        <label className="block text-sm font-semibold text-brand-text">Prize description *</label>
         <input
           type="text"
           value={prizeDescription}
           onChange={(e) => setPrizeDescription(e.target.value)}
           placeholder="e.g. AirPods Pro, $50 gift card…"
           maxLength={200}
-          className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-            placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-            focus:ring-brand-purple transition"
+          className={inputCls}
         />
       </div>
 
-      {/* Creator name */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Your name (organiser)</label>
+        <label className="block text-sm font-semibold text-brand-text">Your name (organiser)</label>
         <input
           type="text"
           value={creatorName}
           onChange={(e) => setCreatorName(e.target.value)}
           placeholder="e.g. Chris"
-          className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-            placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-            focus:ring-brand-purple transition"
+          className={inputCls}
         />
       </div>
 
-      {/* Ticket price */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Ticket price (USD) *</label>
+        <label className="block text-sm font-semibold text-brand-text">Ticket price (USD) *</label>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted">$</span>
           <input
             type="number"
             value={ticketPrice}
@@ -95,17 +92,14 @@ export function CreateRaffleForm() {
             min="0"
             step="0.01"
             placeholder="0.00"
-            className="w-full rounded-xl border border-brand-border bg-brand-card pl-8 pr-4 py-3 text-white
-              placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-              focus:ring-brand-purple transition"
+            className={inputCls + " pl-8"}
           />
         </div>
-        <p className="text-xs text-gray-500">Set to 0 for a free raffle; paid raffles use Stripe Checkout</p>
+        <p className="text-xs text-brand-muted">0 = free raffle; paid raffles use Stripe Checkout</p>
       </div>
 
-      {/* Max entries */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Max tickets *</label>
+        <label className="block text-sm font-semibold text-brand-text">Max tickets *</label>
         <input
           type="number"
           value={maxEntries}
@@ -113,34 +107,29 @@ export function CreateRaffleForm() {
           min="1"
           step="1"
           placeholder="100"
-          className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-            placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-            focus:ring-brand-purple transition"
+          className={inputCls}
         />
       </div>
 
-      {/* Draw time */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-gray-300">Draw time (optional)</label>
+        <label className="block text-sm font-semibold text-brand-text">Draw time (optional)</label>
         <input
           type="datetime-local"
           value={drawTime}
           onChange={(e) => setDrawTime(e.target.value)}
-          className="w-full rounded-xl border border-brand-border bg-brand-card px-4 py-3 text-white
-            placeholder-gray-600 focus:border-brand-purple focus:outline-none focus:ring-1
-            focus:ring-brand-purple transition [color-scheme:dark]"
+          className={inputCls}
         />
-        <p className="text-xs text-gray-500">Leave blank to draw any time after closing</p>
+        <p className="text-xs text-brand-muted">Leave blank to draw manually after closing</p>
       </div>
 
       {error && (
-        <p className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
+        <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
           {error}
         </p>
       )}
 
       {!isAdmin && (
-        <p className="text-sm text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 rounded-xl px-4 py-3">
+        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
           Log in as admin (top-right) to create a raffle.
         </p>
       )}
@@ -148,20 +137,14 @@ export function CreateRaffleForm() {
       <button
         type="submit"
         disabled={isPending || !isAdmin}
-        className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold
-          bg-brand-gradient text-white transition disabled:opacity-50 disabled:cursor-not-allowed
-          active:scale-95 hover:opacity-90"
+        className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold
+          bg-brand-yellow text-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed
+          active:scale-[0.98] hover:brightness-105"
       >
         {isPending ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Creating…
-          </>
+          <><Loader2 className="w-4 h-4 animate-spin" />Creating…</>
         ) : (
-          <>
-            <Plus className="w-4 h-4" />
-            Create Raffle
-          </>
+          <><Plus className="w-4 h-4" />Create Raffle</>
         )}
       </button>
     </motion.form>

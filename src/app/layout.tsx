@@ -23,25 +23,25 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#0D0D1A",
+  themeColor: "#1A1A2E",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-brand-dark">
+      <body className="min-h-screen bg-brand-surface">
         <Providers>
-          <header className="sticky top-0 z-50 border-b border-brand-border/60 bg-brand-dark/80 backdrop-blur-md">
-            <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
+          <header className="sticky top-0 z-50 bg-brand-dark">
+            <div className="mx-auto max-w-lg px-4 py-4 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2">
                 <span className="text-xl">🎟️</span>
-                <span className="font-bold text-white text-lg">Raffle</span>
+                <span className="font-bold text-white text-lg tracking-tight">Raffle</span>
               </Link>
               <WalletButton />
             </div>
           </header>
 
-          <main className="mx-auto max-w-lg px-4 py-6 pb-24">{children}</main>
+          <main className="mx-auto max-w-lg pb-24">{children}</main>
         </Providers>
       </body>
     </html>
