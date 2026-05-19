@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, MoreVertical, Share2, RefreshCw, Copy, Clock, Users, DollarSign, CheckCircle2 } from "lucide-react";
@@ -29,6 +29,16 @@ export default function RafflePage({ params }: { params: { id: string } }) {
   const [myEmail, setMyEmail] = useState("");
 
   console.log("[RafflePage] data:", data, "isLoading:", isLoading, "queryError:", queryError);
+
+  // Catch errors in effects/async that React error boundaries miss
+  useEffect(() => {
+    const handler = (event: ErrorEvent) => {
+      console.error("[RafflePage][window.onerror]", event.message, event.error);
+      alert(`[DEBUG] Unhandled error:\n${event.message}\n\n${event.error?.stack ?? ""}`);
+    };
+    window.addEventListener("error", handler);
+    return () => window.removeEventListener("error", handler);
+  }, []);
 
   const raffle = data?.raffle;
   const drawResult = data?.drawResult ?? null;
