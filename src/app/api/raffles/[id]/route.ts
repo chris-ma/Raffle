@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, dbReady } from "@/lib/db";
 import { raffles, tickets, drawResults } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
@@ -8,6 +8,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     return Response.json({ error: "Invalid raffle ID" }, { status: 400 });
   }
 
+  await dbReady;
   const raffle = await db.query.raffles.findFirst({
     where: eq(raffles.id, raffleId),
   });

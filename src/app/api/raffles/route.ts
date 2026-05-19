@@ -1,14 +1,16 @@
-import { db } from "@/lib/db";
+import { db, dbReady } from "@/lib/db";
 import { raffles } from "@/lib/schema";
 import { isAdmin, unauthorizedResponse } from "@/lib/auth";
 import { desc } from "drizzle-orm";
 
 export async function GET() {
+  await dbReady;
   const all = await db.select().from(raffles).orderBy(desc(raffles.createdAt));
   return Response.json(all);
 }
 
 export async function POST(req: Request) {
+  await dbReady;
   if (!isAdmin(req)) return unauthorizedResponse();
 
   const body = await req.json();

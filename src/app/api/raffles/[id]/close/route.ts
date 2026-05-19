@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, dbReady } from "@/lib/db";
 import { raffles } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 import { isAdmin, unauthorizedResponse } from "@/lib/auth";
@@ -11,6 +11,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     return Response.json({ error: "Invalid raffle ID" }, { status: 400 });
   }
 
+  await dbReady;
   const result = await db
     .update(raffles)
     .set({ status: "closed" })
