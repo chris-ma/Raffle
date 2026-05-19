@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, MoreVertical, Share2, RefreshCw, Copy, Clock, Users, DollarSign, CheckCircle2 } from "lucide-react";
@@ -20,8 +20,8 @@ const STATUS_STEPS = [
   { key: "drawn",  label: "Winner Drawn", sub: "Draw complete",      color: "#00B894" },
 ] as const;
 
-export default function RafflePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function RafflePage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { isAdmin } = useAdmin();
   const { data, isLoading, refetch } = useRaffleDetail(id);
   const [myEmail, setMyEmail] = useState("");

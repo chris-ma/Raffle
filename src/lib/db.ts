@@ -2,8 +2,10 @@ import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
+// Use a placeholder URL at build time so Next.js static analysis doesn't throw.
+// The real URL must be set at runtime via TURSO_DATABASE_URL.
 const client = createClient({
-  url: process.env.TURSO_DATABASE_URL!,
+  url: process.env.TURSO_DATABASE_URL ?? "libsql://placeholder.invalid",
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
@@ -11,8 +13,10 @@ export const db = drizzle(client, { schema });
 export { client };
 
 // Creates tables on first cold-start so manual migration is never needed.
-export const dbReady = client
-  .executeMultiple(`
+// Skipped at build time when TURSO_DATABASE_URL is absent.
+export const dbReady = process.env.TURSO_DATABASE_URL
+  ? client
+    .executeMultiple(`
     CREATE TABLE IF NOT EXISTS raffles (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       prize_description TEXT NOT NULL,
@@ -44,4 +48,5 @@ export const dbReady = client
       drawn_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `)
-  .catch((e: unknown) => console.error("[db] auto-init failed:", e));
+  .catch((e: unknown) => console.error("[db] auto-init failed:", e))
+  : Promise.resolve();
