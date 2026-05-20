@@ -8,17 +8,19 @@ export function useAdmin() {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem(SESSION_KEY);
-    if (stored) setToken(stored);
+    try {
+      const stored = sessionStorage.getItem(SESSION_KEY);
+      if (stored) setToken(stored);
+    } catch {}
   }, []);
 
   const login = useCallback((secret: string) => {
-    sessionStorage.setItem(SESSION_KEY, secret);
+    try { sessionStorage.setItem(SESSION_KEY, secret); } catch {}
     setToken(secret);
   }, []);
 
   const logout = useCallback(() => {
-    sessionStorage.removeItem(SESSION_KEY);
+    try { sessionStorage.removeItem(SESSION_KEY); } catch {}
     setToken(null);
   }, []);
 
